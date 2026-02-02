@@ -7,7 +7,7 @@ on:
     branches: [ test ]
   workflow_dispatch:
   schedule:
-    - cron: '30 6 * * *'   # 2:30 PM PH time (UTC+8) every day
+    - cron: '45 6 * * *'   # 2:45 PM PH time (6:45 UTC)
 
 jobs:
   test:
