@@ -7,7 +7,7 @@ on:
     branches: [ test ]
   workflow_dispatch:
   schedule:
-    - cron: '45 6 * * *'   # 2:45 PM PH time (6:45 UTC)
+    - cron: '45 6 * * *'   # 2:45 PM PH time
 
 jobs:
   test:
@@ -15,34 +15,32 @@ jobs:
     timeout-minutes: 60
 
     steps:
-      # Checkout code
       - uses: actions/checkout@v4
 
-      # Setup Node.js
       - uses: actions/setup-node@v4
         with:
           node-version: 18
           cache: 'npm'
 
-      # Install project dependencies
+      # Install dependencies
       - run: npm ci
 
-      # Install Playwright browsers
-      - run: npx playwright install
+      # Install Playwright browsers and dependencies
+      - run: npx playwright install --with-deps
 
-      # Install Allure Playwright reporter
+      # Install Allure reporter for Playwright
       - run: npm install --save-dev allure-playwright
 
       # Run Playwright tests with Allure reporter
       - run: npx playwright test --reporter=line,allure-playwright
 
-      # Install Allure CLI to generate HTML report
+      # Install Allure CLI to generate report
       - run: npm install -g allure-commandline
 
-      # Generate Allure report from test results
+      # Generate HTML Allure report
       - run: allure generate allure-results --clean -o allure-report
 
-      # Upload Allure report as artifact for download
+      # Upload report
       - uses: actions/upload-artifact@v4
         if: always()
         with:
