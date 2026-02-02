@@ -15,20 +15,31 @@ jobs:
     timeout-minutes: 60
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-      - uses: actions/setup-node@v4
+      - name: Show current time
+        run: |
+          echo "Current UTC time: $(date -u)"
+          echo "Current PH time: $(TZ='Asia/Manila' date)"
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
         with:
           node-version: 18
           cache: 'npm'
 
-      - run: npm ci
+      - name: Install dependencies
+        run: npm ci
 
-      - run: npx playwright install
+      - name: Install Playwright browsers
+        run: npx playwright install
 
-      - run: npx playwright test
+      - name: Run Playwright tests in parallel
+        run: npx playwright test --workers=max
 
-      - uses: actions/upload-artifact@v4
+      - name: Upload Playwright report
+        uses: actions/upload-artifact@v4
         if: always()
         with:
           name: playwright-report
