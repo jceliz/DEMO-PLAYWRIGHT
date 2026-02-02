@@ -7,39 +7,29 @@ on:
     branches: [ test ]
   workflow_dispatch:
   schedule:
-    # 2:30 PM PH time (UTC+8 → 6:30 UTC)
-    - cron: '30 6 * * *'
+    - cron: '45 6 * * *'   # 2:45 PM PH time (6:45 UTC)
 
 jobs:
   test:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        browser: [chromium, firefox, webkit]  # Parallel runs by browser
     timeout-minutes: 60
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 18
+          cache: 'npm'
 
-      - name: Install project dependencies
-        run: |
-          npm ci
-          npx playwright install --with-deps
+      - run: npm ci
 
-      - name: Run Playwright tests
-        continue-on-error: true
-        run: |
-          npx playwright test --project=${{ matrix.browser }} --reporter=html
+      - run: npx playwright install
 
-      - name: Upload Playwright report
+      - run: npx playwright test
+
+      - uses: actions/upload-artifact@v4
         if: always()
-        uses: actions/upload-artifact@v4
         with:
-          name: playwright-report-${{ matrix.browser }}
+          name: playwright-report
           path: playwright-report/
