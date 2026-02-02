@@ -7,71 +7,43 @@ on:
     branches: [ test ]
   workflow_dispatch:
   schedule:
-    - cron: '45 6 * * *'   # 2:45 PM PH time (6:45 UTC)
+    # 2:30 PM PH time (UTC+8 → 6:30 UTC)
+    - cron: '30 6 * * *'
 
 jobs:
   test:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        browser: [chromium, firefox, webkit]  # Parallel runs by browser
     timeout-minutes: 60
 
     steps:
-      # Checkout code
-      - name: Checkout code
+      # 1. Checkout code
+      - name: Checkout repository
         uses: actions/checkout@v4
 
-      # Show current time
-      - name: Show current time
-        run: |
-          echo "Current UTC time: $(date -u)"
-          echo "Current PH time: $(TZ='Asia/Manila' date)"
-
-      # Setup Node.js
-      - name: Setup Node
+      # 2. Setup Node.js
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 18
-          cache: 'npm'
+          node-version: 20
 
-      # Install dependencies
-      - name: Install dependencies
-        run: npm ci
-
-      # Install system dependencies for Playwright
-      - name: Install system dependencies for Playwright
+      # 3. Install dependencies
+      - name: Install project dependencies
         run: |
-          sudo apt-get update
-          sudo apt-get install -y \
-            libnss3 \
-            libatk1.0-0 \
-            libatk-bridge2.0-0 \
-            libcups2 \
-            libxcomposite1 \
-            libxdamage1 \
-            libxrandr2 \
-            libgbm1 \
-            libpango-1.0-0 \
-            libasound2 \
-            libffi8 \
-            libx264 \
-            libglib2.0-0 \
-            wget \
-            ca-certificates
+          npm ci
+          npx playwright install --with-deps  # Installs browsers + system deps
 
-      # Install Playwright browsers
-      - name: Install Playwright browsers
-        run: npx playwright install
-
-      # Run Playwright tests with 1-minute delay and HTML report
-      - name: Run Playwright tests in parallel
+      # 4. Run Playwright tests in parallel by browser
+      - name: Run Playwright tests
         run: |
-          echo "Waiting 1 minute before starting tests..."
-          sleep 60
-          npx playwright test --workers=max --reporter=html
+          npx playwright test --project=${{ matrix.browser }} --reporter=list
 
-      # Upload HTML report as artifact
+      # 5. Upload test results
       - name: Upload Playwright report
-        uses: actions/upload-artifact@v4
         if: always()
+        uses: actions/upload-artifact@v3
         with:
-          name: playwright-report
+          name: playwright-report-${{ matrix.browser }}
           path: playwright-report/
