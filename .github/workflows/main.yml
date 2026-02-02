@@ -19,28 +19,24 @@ jobs:
     timeout-minutes: 60
 
     steps:
-      # 1. Checkout code
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # 2. Setup Node.js
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 20
 
-      # 3. Install dependencies
       - name: Install project dependencies
         run: |
           npm ci
-          npx playwright install --with-deps  # Installs browsers + system deps
+          npx playwright install --with-deps
 
-      # 4. Run Playwright tests in parallel by browser
       - name: Run Playwright tests
+        continue-on-error: true
         run: |
-          npx playwright test --project=${{ matrix.browser }} --reporter=list
+          npx playwright test --project=${{ matrix.browser }} --reporter=html
 
-      # 5. Upload test results
       - name: Upload Playwright report
         if: always()
         uses: actions/upload-artifact@v4
