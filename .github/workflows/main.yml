@@ -22,7 +22,6 @@ jobs:
 
       - run: npm ci
 
-      # ✅ Install browsers only (no Linux deps)
       - run: npx playwright install
 
       - run: npx playwright test
