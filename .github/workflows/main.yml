@@ -6,6 +6,8 @@ on:
   pull_request:
     branches: [ test ]
   workflow_dispatch:
+  schedule:
+    - cron: '30 6 * * *'   # 2:30 PM PH time (UTC+8) every day
 
 jobs:
   test:
