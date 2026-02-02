@@ -22,6 +22,7 @@ test('test codegen', async ({ page }) => {
 });
 
 test('test login and logout sauce demo1', async ({ page }) => {
+  await page.waitForTimeout(60000);
   await page.goto('https://www.saucedemo.com/');
   await page.locator('[data-test="username"]').click();
   await page.locator('[data-test="username"]').fill('standard_user');
@@ -34,6 +35,7 @@ test('test login and logout sauce demo1', async ({ page }) => {
 });
 
 test('test login and logout sauce demo2', async ({ page }) => {
+  await page.waitForTimeout(60000);
   await page.goto('https://www.saucedemo.com/');
   await page.locator('[data-test="username"]').click();
   await page.locator('[data-test="username"]').fill('standard_user');
@@ -46,6 +48,7 @@ test('test login and logout sauce demo2', async ({ page }) => {
 });
 
 test('test login and logout sauce demo3', async ({ page }) => {
+  await page.waitForTimeout(60000);
   await page.goto('https://www.saucedemo.com/');
   await page.locator('[data-test="username"]').click();
   await page.locator('[data-test="username"]').fill('standard_user');
@@ -58,6 +61,7 @@ test('test login and logout sauce demo3', async ({ page }) => {
 });
 
 test('test login and logout sauce demo4', async ({ page }) => {
+  await page.waitForTimeout(60000);
   await page.goto('https://www.saucedemo.com/');
   await page.locator('[data-test="username"]').click();
   await page.locator('[data-test="username"]').fill('standard_user');
@@ -70,6 +74,7 @@ test('test login and logout sauce demo4', async ({ page }) => {
 });
 
 test('test login and logout sauce demo5', async ({ page }) => {
+  await page.waitForTimeout(60000);
   await page.goto('https://www.saucedemo.com/');
   await page.locator('[data-test="username"]').click();
   await page.locator('[data-test="username"]').fill('standard_user');
