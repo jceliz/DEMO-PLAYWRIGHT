@@ -33,10 +33,11 @@ jobs:
         run: npm ci
 
       - name: Install Playwright browsers
-        run: npx playwright install
+        run: npx playwright install --with-deps
 
-      - name: Run Playwright tests in parallel
-        run: npx playwright test --workers=max
+      - name: Run Playwright tests
+        run: |
+          npx playwright test --workers=max --reporter=html
 
       - name: Upload Playwright report
         uses: actions/upload-artifact@v4
